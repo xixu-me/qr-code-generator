@@ -1,0 +1,11 @@
+# robots.txt for QR Code Generator
+# https://qrcg.xi-xu.me
+
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://qrcg.xi-xu.me/sitemap.xml
+
+# Crawl-delay (optional, helps prevent server overload)
+Crawl-delay: 1
