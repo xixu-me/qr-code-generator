@@ -6,6 +6,8 @@ import {
   QRInfo,
 } from "../types/qr";
 
+type QRCodeVersion = Parameters<typeof qrcode>[0];
+
 // Map error correction levels to library constants
 const EC_LEVEL_MAP: Record<ErrorCorrectionLevel, ErrorCorrectionLevel> = {
   L: "L",
@@ -79,7 +81,7 @@ export function generateQRCode(config: QRConfig): {
   }
 
   // Create QR code
-  const qr = qrcode(version as any, ecLevel);
+  const qr = qrcode(version as QRCodeVersion, ecLevel);
   qr.addData(config.content);
   qr.make();
 
@@ -185,7 +187,7 @@ export function renderQRToCanvas(
           case "square":
             ctx.fillRect(x, y, moduleSize, moduleSize);
             break;
-          case "rounded":
+          case "rounded": {
             ctx.beginPath();
             const radius = moduleSize * 0.3;
             ctx.moveTo(x + radius, y);
@@ -205,6 +207,7 @@ export function renderQRToCanvas(
             ctx.closePath();
             ctx.fill();
             break;
+          }
           case "dots":
             ctx.beginPath();
             ctx.arc(

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { generateQRCode } from "../lib/qrGenerator";
 import { QRCodeInstance, QRConfig, QRInfo } from "../types/qr";
 
@@ -16,9 +16,6 @@ const DEFAULT_CONFIG: QRConfig = {
 
 export function useQRCode() {
   const [config, setConfig] = useState<QRConfig>(DEFAULT_CONFIG);
-  const [qr, setQr] = useState<QRCodeInstance | null>(null);
-  const [info, setInfo] = useState<QRInfo | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
   const updateConfig = useCallback((updates: Partial<QRConfig>) => {
     setConfig((prev) => ({ ...prev, ...updates }));
@@ -28,25 +25,32 @@ export function useQRCode() {
     setConfig(DEFAULT_CONFIG);
   }, []);
 
-  useEffect(() => {
+  const { qr, info, error } = useMemo<{
+    qr: QRCodeInstance | null;
+    info: QRInfo | null;
+    error: string | null;
+  }>(() => {
     if (!config.content) {
-      setQr(null);
-      setInfo(null);
-      setError(null);
-      return;
+      return {
+        qr: null,
+        info: null,
+        error: null,
+      };
     }
 
     try {
       const result = generateQRCode(config);
-      setQr(result.qr);
-      setInfo(result.info);
-      setError(null);
+      return {
+        qr: result.qr,
+        info: result.info,
+        error: null,
+      };
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to generate QR code"
-      );
-      setQr(null);
-      setInfo(null);
+      return {
+        qr: null,
+        info: null,
+        error: err instanceof Error ? err.message : "Failed to generate QR code",
+      };
     }
   }, [config]);
 
