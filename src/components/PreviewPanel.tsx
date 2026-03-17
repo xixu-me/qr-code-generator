@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { renderQRToCanvas } from '../lib/qrGenerator';
 import { QRCodeInstance, QRConfig, QRInfo } from '../types/qr';
 import './PreviewPanel.css';
@@ -14,13 +14,22 @@ interface PreviewPanelProps {
 
 export function PreviewPanel({ qr, config, info, onExportPNG, onExportSVG, onExportConfig }: PreviewPanelProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const previewKey = useMemo(
+    () => JSON.stringify({
+      content: config.content,
+      version: info?.version ?? config.version,
+      errorCorrectionLevel: config.errorCorrectionLevel,
+      maskPattern: config.maskPattern,
+      quietZone: config.quietZone,
+      moduleStyle: config.moduleStyle,
+      foregroundColor: config.foregroundColor,
+      backgroundColor: config.backgroundColor,
+    }),
+    [config, info?.version],
+  );
 
   useEffect(() => {
     if (!qr || !canvasRef.current) return;
-
-    setIsAnimating(true);
-    const timer = setTimeout(() => setIsAnimating(false), 500);
 
     try {
       const canvas = renderQRToCanvas(qr, config, 512);
@@ -33,8 +42,6 @@ export function PreviewPanel({ qr, config, info, onExportPNG, onExportSVG, onExp
     } catch (error) {
       console.error('Error rendering QR code:', error);
     }
-
-    return () => clearTimeout(timer);
   }, [qr, config]);
 
   if (!qr || !info) {
@@ -53,7 +60,7 @@ export function PreviewPanel({ qr, config, info, onExportPNG, onExportSVG, onExp
     <div className="preview-panel glass-card fade-in">
       <h2 className="panel-title">Preview</h2>
 
-      <div className={`preview-container ${isAnimating ? 'animating' : ''}`}>
+      <div key={previewKey} className="preview-container animating">
         <canvas ref={canvasRef} className="preview-canvas" />
       </div>
 
