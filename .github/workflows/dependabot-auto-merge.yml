@@ -38,4 +38,4 @@ jobs:
             exit 0
           fi
 
-          gh pr merge --auto --squash "$PR_URL"
+          gh pr merge --auto --merge "$PR_URL"
