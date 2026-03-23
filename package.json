@@ -11,12 +11,12 @@
     "@typescript-eslint/eslint-plugin": "^8.57.1",
     "@typescript-eslint/parser": "^8.57.1",
     "@vitejs/plugin-react": "^6.0.1",
-    "eslint": "^10.0.3",
+    "eslint": "^10.1.0",
     "eslint-plugin-react-hooks": "^7.1.0-canary-c80a0750-20260312",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^16.5.0",
     "typescript": "^5.2.2",
-    "vite": "^8.0.0"
+    "vite": "^8.0.1"
   },
   "name": "qr-code-generator",
   "private": true,
